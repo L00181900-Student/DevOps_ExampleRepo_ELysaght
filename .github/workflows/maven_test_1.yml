@@ -1,0 +1,36 @@
+name: GitHub Actions - Maven Test
+
+run-name: ${{ github.actor }} is testing out GitHub Actions - Maven YML test
+
+on:
+  push:
+    branches:
+      - main
+      - L00181900-Student-patch-1
+  pull_request:
+    branches:
+      - main
+      - L00181900-Student-patch-1
+
+jobs:
+  MavenTest:
+    name: Run all tests on main branch
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Run a singular Maven test class
+        run: mvn test -Dtest=AdderTest
+
+      - name: Run a singular Maven test method
+        run: mvn test -Dtest=AdderTest#shouldAddTwoNumbers
+
+      - name: Build, test and package 
+        run: mvn --batch-mode --no-transfer-progress clean verify
+        
+      - name: List workspace files
+        run: ls "${{ github.workspace }}"
+
+      - name: Display job status
+        run: echo "This job's status is ${{ job.status }}."
